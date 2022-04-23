@@ -6,22 +6,21 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace CRUDWinFormsMVP.Presenters.Common
 {
-    public class ModelDataValidation
+    public abstract class ModelDataValidation
     {
-        public void Validate(object model)
+        public static void Validate(object model)
         {
             string errorMessage = "";
             List<ValidationResult> results = new List<ValidationResult>();
             ValidationContext context = new ValidationContext(model);
-            bool isValid = Validator.TryValidateObject(model, context, results, true);
+            bool isValid = Validator.TryValidateObject(model, context, results);
 
-            if (isValid == false)
+            if (!isValid)
             {
                 foreach (var item in results)
-                    errorMessage += "- " + item.ErrorMessage + "\n";
+                    errorMessage += " - " + item.ErrorMessage + "\n";
                 throw new Exception(errorMessage);
             }
         }

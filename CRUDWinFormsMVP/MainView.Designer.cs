@@ -1,5 +1,5 @@
 ﻿
-namespace CRUDWinFormsMVP.Views
+namespace CRUDWinFormsMVP
 {
     partial class MainView
     {
@@ -40,24 +40,24 @@ namespace CRUDWinFormsMVP.Views
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 565);
+            this.panel1.Size = new System.Drawing.Size(200, 522);
             this.panel1.TabIndex = 0;
             // 
             // btnPets
             // 
             this.btnPets.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPets.Location = new System.Drawing.Point(3, 54);
+            this.btnPets.Location = new System.Drawing.Point(3, 50);
             this.btnPets.Name = "btnPets";
-            this.btnPets.Size = new System.Drawing.Size(197, 37);
+            this.btnPets.Size = new System.Drawing.Size(197, 34);
             this.btnPets.TabIndex = 0;
             this.btnPets.Text = "Pets";
             this.btnPets.UseVisualStyleBackColor = true;
             // 
             // MainView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1213, 565);
+            this.ClientSize = new System.Drawing.Size(1213, 522);
             this.Controls.Add(this.panel1);
             this.IsMdiContainer = true;
             this.Name = "MainView";

@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRUDWinFormsMVP.Views
+namespace CRUDWinFormsMVP.View
 {
     public interface IMainView
     {
-        event EventHandler ShowPetView;
-        event EventHandler ShowOwnerView;
-        event EventHandler ShowVetsView;
+        event EventHandler ShowPetVIew;
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace CRUDWinFormsMVP.Models
 {
@@ -27,7 +27,7 @@ namespace CRUDWinFormsMVP.Models
         [Required(ErrorMessage = "Pet type is requerid")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Pet type must be between 3 and 50 characters")]
         public string Type { get { return type; } set { type = value; } }
-        
+
         [DisplayName("Pet Color")]
         [Required(ErrorMessage = "Pet color is requerid")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Pet color must be between 3 and 50 characters")]

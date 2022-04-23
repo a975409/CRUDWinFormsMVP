@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRUDWinFormsMVP.Respositories
+namespace CRUDWinFormsMVP.Enums
 {
-    public abstract class BaseRespository
+    public enum CRUDState
     {
-        protected string connectionString;
+        Create, Read, Update, delete
     }
 }

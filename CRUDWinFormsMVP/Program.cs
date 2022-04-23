@@ -1,12 +1,10 @@
 ﻿using CRUDWinFormsMVP.Presenters;
-using CRUDWinFormsMVP.Respositories;
-using CRUDWinFormsMVP.Views;
+using CRUDWinFormsMVP.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
 
 namespace CRUDWinFormsMVP
 {
@@ -20,9 +18,8 @@ namespace CRUDWinFormsMVP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            string sqlConnectionString = ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString;
             IMainView view = new MainView();
-            new MainPresenter(view, sqlConnectionString);
+            new MainPresenter(view);
             Application.Run((Form)view);
         }
     }

@@ -5,27 +5,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace CRUDWinFormsMVP.Respositories
 {
-    public class PetRespository : BaseRespository, IPetRespository
+    public class PetRespository: BaseRespository, IPetRespository
     {
-        public PetRespository(string connectionString) 
+        public PetRespository(string connectionString)
         {
             this.connectionString = connectionString;
         }
 
-        public void Add(PetModel petModel)
+        public void Add(PetModel pet)
         {
-            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string sql = "insert into Pet values (@name,@type,@colour)";
+                string sql = "insert into Pet (Pet_Name,Pet_Type,Pet_Colour) values (@Pet_Name,@Pet_Type,@Pet_Colour)";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
-                    cmd.Parameters.AddWithValue("@name", petModel.Name);
-                    cmd.Parameters.AddWithValue("@type", petModel.Type);
-                    cmd.Parameters.AddWithValue("@colour", petModel.Color);
+                    cmd.Parameters.Add("@Pet_Name", SqlDbType.NVarChar).Value = pet.Name;
+                    cmd.Parameters.Add("@Pet_Type", SqlDbType.NVarChar).Value = pet.Type;
+                    cmd.Parameters.Add("@Pet_Colour", SqlDbType.NVarChar).Value = pet.Color;
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -33,57 +34,58 @@ namespace CRUDWinFormsMVP.Respositories
 
         public void Delete(int id)
         {
-            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string sql = "delete from Pet where Pet_Id=@id";
+                string sql = "delete from Pet where Pet_Id=@Pet_Id";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.Add("@Pet_Id", SqlDbType.Int).Value = id;
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public void Edit(PetModel petModel)
+        public void Edit(PetModel pet)
         {
-            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string sql = "update Pet " +
-                    "set Pet_Name=@name,Pet_Type=@type,Pet_Colour=@colour " +
-                    "where Pet_Id=@id";
+                string sql = "update Pet set " +
+                    "Pet_Name=@Pet_Name,Pet_Type=@Pet_Type,Pet_Colour=@Pet_Colour " +
+                    "where Pet_Id=@Pet_Id";
+
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
-                    cmd.Parameters.AddWithValue("@id", petModel.Id);
-                    cmd.Parameters.AddWithValue("@name", petModel.Name);
-                    cmd.Parameters.AddWithValue("@type", petModel.Type);
-                    cmd.Parameters.AddWithValue("@colour", petModel.Color);
+                    cmd.Parameters.Add("@Pet_Id", SqlDbType.Int).Value = pet.Id;
+                    cmd.Parameters.Add("@Pet_Name", SqlDbType.NVarChar).Value = pet.Name;
+                    cmd.Parameters.Add("@Pet_Type", SqlDbType.NVarChar).Value = pet.Type;
+                    cmd.Parameters.Add("@Pet_Colour", SqlDbType.NVarChar).Value = pet.Color;
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public IEnumerable<PetModel> GetAll()
+        public IEnumerable<PetModel> GetAllData()
         {
-            var petList = new List<PetModel>();
-
-            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            List<PetModel> petList = new List<PetModel>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string sql = "select * from Pet order by Pet_Id desc";
+                string sql = "select * from Pet";
+
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             PetModel pet = new PetModel();
-                            pet.Id = (int)reader[0];
-                            pet.Name = reader[1].ToString();
-                            pet.Type = reader[2].ToString();
-                            pet.Color = reader[3].ToString();
+                            pet.Id = (int)reader["Pet_Id"];
+                            pet.Name = reader["Pet_Name"].ToString();
+                            pet.Type = reader["Pet_Type"].ToString();
+                            pet.Color = reader["Pet_Colour"].ToString();
                             petList.Add(pet);
                         }
                     }
@@ -93,38 +95,32 @@ namespace CRUDWinFormsMVP.Respositories
             return petList;
         }
 
-        public IEnumerable<PetModel> GetByValue(string searchValue)
+        public IEnumerable<PetModel> GetDataBySearchValue(string searchValue)
         {
-            int petId = -1;
-            string petName = string.Empty;
+            int searchId = -1;
+            int.TryParse(searchValue, out searchId);
 
-            if (!int.TryParse(searchValue, out petId))
-                petName = searchValue;
 
-            var petList = new List<PetModel>();
-
-            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            List<PetModel> petList = new List<PetModel>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string sql = "select * from Pet " +
-                    "where Pet_Id=@Pet_Id or Pet_Name like @Pet_Name " +
-                    "order by Pet_Id desc";
+                string sql = "select * from Pet where Pet_Id=@Pet_Id or Pet_Name like @Pet_Name";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Pet_Id", petId);
-                    cmd.Parameters.AddWithValue("@Pet_Name", petName+"%");
-
                     conn.Open();
+                    cmd.Parameters.Add("@Pet_Id", SqlDbType.Int).Value = searchId;
+                    cmd.Parameters.Add("@Pet_Name", SqlDbType.NVarChar).Value = searchValue + "%";
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             PetModel pet = new PetModel();
-                            pet.Id = (int)reader[0];
-                            pet.Name = reader[1].ToString();
-                            pet.Type = reader[2].ToString();
-                            pet.Color = reader[3].ToString();
+                            pet.Id = (int)reader["Pet_Id"];
+                            pet.Name = reader["Pet_Name"].ToString();
+                            pet.Type = reader["Pet_Type"].ToString();
+                            pet.Color = reader["Pet_Colour"].ToString();
                             petList.Add(pet);
                         }
                     }
