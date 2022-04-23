@@ -27,6 +27,41 @@ namespace CRUDWinFormsMVP.Views
         private void AssociateAndRaiseViewEvents()
         {
             btnSearch.Click += delegate { SearchEvent?.Invoke(this, EventArgs.Empty); };
+            btnAddNew.Click += delegate { 
+                AddNewEvent?.Invoke(this, EventArgs.Empty);
+                tabControl1.TabPages.Remove(tabPagePetList);
+                tabControl1.TabPages.Add(tabPagePetDetail);
+                tabPagePetDetail.Text = "Add new pet";
+            };
+            btnEdit.Click += delegate { 
+                EditEvent?.Invoke(this, EventArgs.Empty);
+                tabControl1.TabPages.Remove(tabPagePetList);
+                tabControl1.TabPages.Add(tabPagePetDetail);
+                tabPagePetDetail.Text = "Edit pet";
+            };
+            btnDelete.Click += delegate { 
+                DialogResult result = MessageBox.Show("Are you sure you want to delete the selected pet?", "warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (result == DialogResult.Yes)
+                {
+                    DeleteEvent?.Invoke(this, EventArgs.Empty);
+                    MessageBox.Show(Message);
+                }
+            };
+            btnCancel.Click += delegate { 
+                CancelEvent?.Invoke(this, EventArgs.Empty);
+                tabControl1.TabPages.Remove(tabPagePetDetail);
+                tabControl1.TabPages.Add(tabPagePetList);
+            };
+            btnSave.Click += delegate { 
+                SaveEvent?.Invoke(this, EventArgs.Empty);
+                if (isSuccess)
+                {
+                    tabControl1.TabPages.Remove(tabPagePetDetail);
+                    tabControl1.TabPages.Add(tabPagePetList);
+                }
+                MessageBox.Show(message);
+            };
             txtSearch.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter)

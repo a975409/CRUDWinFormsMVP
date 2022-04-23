@@ -298,8 +298,10 @@ namespace CRUDWinFormsMVP.Views
             // 
             this.txtPetId.Location = new System.Drawing.Point(63, 54);
             this.txtPetId.Name = "txtPetId";
+            this.txtPetId.ReadOnly = true;
             this.txtPetId.Size = new System.Drawing.Size(154, 29);
             this.txtPetId.TabIndex = 6;
+            this.txtPetId.Text = "0";
             // 
             // PetView
             // 

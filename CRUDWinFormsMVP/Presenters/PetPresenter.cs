@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CRUDWinFormsMVP.Models;
 using CRUDWinFormsMVP.Views;
+using CRUDWinFormsMVP.Presenters.Common;
 
 namespace CRUDWinFormsMVP.Presenters
 {
@@ -44,7 +45,12 @@ namespace CRUDWinFormsMVP.Presenters
 
         private void View_EditEvent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var pet = (PetModel)petBindingSource.Current;
+            view.PetId = pet.Id.ToString();
+            view.PetName = pet.Name;
+            view.PetType = pet.Type;
+            view.PetColor = pet.Color;
+            view.IsEdit = true;
         }
 
         private void View_SearchEvent(object sender, EventArgs e)
@@ -61,22 +67,71 @@ namespace CRUDWinFormsMVP.Presenters
 
         private void View_SaveEvent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var model = new PetModel();
+            model.Id = Convert.ToInt32(view.PetId);
+            model.Name = view.PetName;
+            model.Type = view.PetType;
+            model.Color = view.PetColor;
+
+            try
+            {
+                new ModelDataValidation().Validate(model);
+                if (view.IsEdit)
+                {
+                    respository.Edit(model);
+                    view.Message = "Pet edited successfuly";
+                }
+                else
+                {
+                    respository.Add(model);
+                    view.Message = "Pet added successfuly";
+                }
+                view.IsSuccess = true;
+                LoadAllPetList();
+                CleanviewFields();
+            }
+            catch(Exception ex)
+            {
+                view.IsSuccess = false;
+                view.Message = ex.Message;
+            }
+
+        }
+
+        private void CleanviewFields()
+        {
+            view.PetId ="0";
+            view.PetName = "";
+            view.PetType = "";
+            view.PetColor = "";
+            view.IsEdit = false;
         }
 
         private void View_DeleteEvent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pet = (PetModel)petBindingSource.Current;
+                respository.Delete(pet.Id);
+                view.IsSuccess = true;
+                view.Message = "Pet deleted successfully";
+                LoadAllPetList();
+            }
+            catch (Exception ex)
+            {
+                view.IsSuccess = false;
+                view.Message = "An error ocurred,could not delete pet";
+            }
         }
 
         private void View_CancelEvent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            CleanviewFields();
         }
 
         private void View_AddNewEvent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            view.IsEdit = false;
         }
     }
 }

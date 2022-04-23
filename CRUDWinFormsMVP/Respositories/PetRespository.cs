@@ -17,17 +17,51 @@ namespace CRUDWinFormsMVP.Respositories
 
         public void Add(PetModel petModel)
         {
-            
+            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            {
+                string sql = "insert into Pet values (@name,@type,@colour)";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@name", petModel.Name);
+                    cmd.Parameters.AddWithValue("@type", petModel.Type);
+                    cmd.Parameters.AddWithValue("@colour", petModel.Color);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            {
+                string sql = "delete from Pet where Pet_Id=@id";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public void Edit(PetModel petModel)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = new SqlConnection(this.connectionString))
+            {
+                string sql = "update Pet " +
+                    "set Pet_Name=@name,Pet_Type=@type,Pet_Colour=@colour " +
+                    "where Pet_Id=@id";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@id", petModel.Id);
+                    cmd.Parameters.AddWithValue("@name", petModel.Name);
+                    cmd.Parameters.AddWithValue("@type", petModel.Type);
+                    cmd.Parameters.AddWithValue("@colour", petModel.Color);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public IEnumerable<PetModel> GetAll()
